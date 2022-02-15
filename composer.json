@@ -1,0 +1,29 @@
+{
+    "name": "sovic/trust-pay-php-sdk",
+    "description": "PHP SDK for TrustPay payment gateway",
+    "keywords": [
+        "TrustPay",
+        "payments",
+        "gateway",
+        "php",
+        "sdk"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "TrustPay\\": "src/"
+        },
+        "classmap": [
+            "src/"
+        ]
+    },
+    "require": {
+        "php": ">=7.4",
+        "ext-json": "*",
+        "guzzlehttp/guzzle": "^7.3"
+    },
+    "require-dev": {
+        "roave/security-advisories": "dev-master"
+    }
+}

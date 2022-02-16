@@ -32,6 +32,8 @@ class TrustPay
         1101 => 'Unsupported currency conversion',
     ];
 
+    private const BASE_URL = 'https://amapi.trustpay.eu/mapi5/wire/paypopup';
+
     private int $accountId;
     private string $secret;
 
@@ -39,6 +41,34 @@ class TrustPay
     {
         $this->accountId = $accountId;
         $this->secret = $secret;
+    }
+
+    public function buildPaymentUrl(TrustPayPayment $payment, string $notificationUrl): string
+    {
+        $paymentType = 0;
+
+        $signatureData = sprintf(
+            "%d/%s/%s/%s/%d",
+            $this->accountId,
+            number_format($payment->getAmount(), 2, '.', ''),
+            $payment->getCurrency(),
+            $payment->getClientPaymentId(),
+            $paymentType
+        );
+        $signature = TrustPayHelper::signMessage($signatureData, $this->secret);
+
+        $query = sprintf(
+            'AccountId=%d&Amount=%s&Currency=%s&Reference=%s&NotificationUrl=%s&PaymentType=%d&Signature=%s',
+            $this->accountId,
+            number_format($payment->getAmount(), 2, '.', ''),
+            $payment->getCurrency(),
+            urlencode($payment->getClientPaymentId()),
+            urlencode($notificationUrl),
+            $paymentType,
+            $signature
+        );
+
+        return self::BASE_URL . '?' . $query;
     }
 
     public function validatePaymentRequestQuery(array $query): TrustPayPayment

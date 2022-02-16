@@ -29,7 +29,7 @@ $query = [ … ]; // query params array from HTTP request
 
 try {
     $trustPayPayment = $trustPay->validatePaymentRequestQuery($query);
-    if ($trustPayPayment->isSuccess()) {
+    if ($trustPayPayment->isPaid()) {
         // handle successful payment
         $clientPaymentId = $trustPayPayment->getClientPaymentId();
     } else {

@@ -108,4 +108,18 @@ class TrustPayPayment
     {
         $this->counterAccountName = $counterAccountName;
     }
+
+    /**
+     * Please note that only result codes 0, 3 and 4 received in a notification can be treated
+     * as a successfully executed payment which has been or is guaranteed
+     * to be credited to merchant’s account in TrustPay.
+     *
+     * @see https://doc.trustpay.eu/?aspxerrorpath=/v02#codes-result
+     *
+     * @return bool
+     */
+    public function isPaid(): bool
+    {
+        return isset($this->resultCode) && in_array($this->resultCode, [0, 3, 4]);
+    }
 }

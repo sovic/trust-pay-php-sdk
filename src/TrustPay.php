@@ -73,53 +73,53 @@ class TrustPay
 
     public function validatePaymentRequestQuery(array $query): TrustPayPayment
     {
-        if (empty($query['AccountId']) || (int) $query['AccountId'] <= 0) {
-            throw new InvalidArgumentException('Missing AccountId', 1);
+        if (empty($query['AID']) || (int) $query['AID'] <= 0) {
+            throw new InvalidArgumentException('Missing AID', 1);
         }
-        if ($this->accountId !== (int) $query['AccountId']) {
-            throw new InvalidArgumentException('Invalid AccountId', 2);
+        if ($this->accountId !== (int) $query['AID']) {
+            throw new InvalidArgumentException('Invalid AID', 2);
         }
-        $accountId = $query['AccountId'];
+        $accountId = $query['AID'];
 
-        if (!in_array($query['Type'], [self::TYPE_CREDIT_CARD, self::TYPE_DEBIT_CARD], true)) {
-            throw new InvalidArgumentException('Missing Type', 2);
+        if (!in_array($query['TYP'], [self::TYPE_CREDIT_CARD, self::TYPE_DEBIT_CARD], true)) {
+            throw new InvalidArgumentException('Missing TYP', 2);
         }
-        $type = $query['Type'];
+        $type = $query['TYP'];
 
-        if (empty($query['Amount']) || (float) $query['Amount'] <= 0) {
-            throw new InvalidArgumentException('Missing Amount');
+        if (empty($query['AMT']) || (float) $query['AMT'] <= 0) {
+            throw new InvalidArgumentException('Missing AMT');
         }
-        $amount = (float) $query['Amount'];
+        $amount = (float) $query['AMT'];
 
-        if (empty($query['Currency'])) {
-            throw new InvalidArgumentException('Missing Currency');
+        if (empty($query['CUR'])) {
+            throw new InvalidArgumentException('Missing CUR');
         }
-        $currency = $query['Currency'];
+        $currency = $query['CUR'];
 
         $clientPaymentId = null;
-        if (!empty($query['Reference'])) {
-            $clientPaymentId = $query['Reference'];
+        if (!empty($query['REF'])) {
+            $clientPaymentId = $query['REF'];
         }
 
-        if (empty($query['PaymentId'])) {
-            throw new InvalidArgumentException('Missing PaymentId');
+        if (empty($query['TID'])) {
+            throw new InvalidArgumentException('Missing TID');
         }
-        $trustPayPaymentId = (int) $query['PaymentId'];
+        $trustPayPaymentId = (int) $query['TID'];
 
-        if (!array_key_exists((int) $query['ResultCode'], self::RESULT_CODES)) {
-            throw new InvalidArgumentException('Missing ResultCode');
+        if (!array_key_exists((int) $query['RES'], self::RESULT_CODES)) {
+            throw new InvalidArgumentException('Missing RES');
         }
-        $resultCode = $query['ResultCode'];
+        $resultCode = $query['RES'];
 
         $trustPayOrderId = null;
-        if (!empty($query['OrderId'])) {
-            $trustPayOrderId = (int) $query['OrderId'];
+        if (!empty($query['OID'])) {
+            $trustPayOrderId = (int) $query['OID'];
         }
 
-        if (empty($query['Signature'])) {
-            throw new InvalidArgumentException('Missing Signature');
+        if (empty($query['SIG'])) {
+            throw new InvalidArgumentException('Missing SIG');
         }
-        $signature = $query['Signature'];
+        $signature = $query['SIG'];
 
         $counterAccount = null;
         if (!empty($query['CounterAccount'])) {

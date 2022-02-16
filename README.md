@@ -13,3 +13,31 @@ Using [Composer](https://getcomposer.org/doc/00-intro.md)
 ```bash
 composer require sovic/trust-pay-php-sdk
 ```
+
+## Usage
+
+Init
+
+```php
+$trustPay = new TrustPay('{account-id}', '{secret}');
+```
+
+Validate TrustPay status request
+
+```php 
+$query = [ … ]; // query params array from HTTP request
+
+try {
+    $trustPayPayment = $trustPay->validatePaymentRequestQuery($query);
+    if ($trustPayPayment->isSuccess()) {
+        // handle successful payment
+        $clientPaymentId = $trustPayPayment->getClientPaymentId();
+    } else {
+        // handle failed|cancelled payment
+    }
+} catch(Exception $e) {
+    // invalid request, some parameter missing or invalid signature hash, output 400 Bad Request
+}
+
+// all OK, output 202 Accepted
+```

@@ -8,6 +8,7 @@ class TrustPayPayment
 
     private ?string $clientPaymentId;
     private int $trustPayPaymentId;
+    private ?int $trustPayOrderId;
 
     private string $type;
     private float $amount;
@@ -15,7 +16,8 @@ class TrustPayPayment
 
     private int $resultCode;
 
-    private ?int $trustPayOrderId;
+    private ?string $counterAccount;
+    private ?string $counterAccountName;
 
     public function getClientPaymentId(): ?string
     {
@@ -35,6 +37,16 @@ class TrustPayPayment
     public function setTrustPayPaymentId(int $trustPayPaymentId): void
     {
         $this->trustPayPaymentId = $trustPayPaymentId;
+    }
+
+    public function getTrustPayOrderId(): ?int
+    {
+        return $this->trustPayOrderId;
+    }
+
+    public function setTrustPayOrderId(?int $trustPayOrderId): void
+    {
+        $this->trustPayOrderId = $trustPayOrderId;
     }
 
     public function getType(): string
@@ -77,13 +89,23 @@ class TrustPayPayment
         $this->resultCode = $resultCode;
     }
 
-    public function getTrustPayOrderId(): ?int
+    public function getCounterAccount(): ?string
     {
-        return $this->trustPayOrderId;
+        return $this->counterAccount;
     }
 
-    public function setTrustPayOrderId(?int $trustPayOrderId): void
+    public function setCounterAccount(?string $counterAccount): void
     {
-        $this->trustPayOrderId = $trustPayOrderId;
+        $this->counterAccount = $counterAccount;
+    }
+
+    public function getCounterAccountName(): ?string
+    {
+        return $this->counterAccountName;
+    }
+
+    public function setCounterAccountName(?string $counterAccountName): void
+    {
+        $this->counterAccountName = $counterAccountName;
     }
 }

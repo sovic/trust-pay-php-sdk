@@ -33,10 +33,12 @@ class TrustPay
     ];
 
     private int $accountId;
+    private string $secret;
 
-    public function __construct(int $accountId)
+    public function __construct(int $accountId, string $secret)
     {
         $this->accountId = $accountId;
+        $this->secret = $secret;
     }
 
     public function validatePaymentRequestQuery(array $query): TrustPayPayment
@@ -52,7 +54,7 @@ class TrustPay
         if (!in_array($query['Type'], [self::TYPE_CREDIT_CARD, self::TYPE_DEBIT_CARD], true)) {
             throw new InvalidArgumentException('Missing Type', 2);
         }
-        $type = (int) $query['Type'];
+        $type = $query['Type'];
 
         if (empty($query['Amount']) || (float) $query['Amount'] <= 0) {
             throw new InvalidArgumentException('Missing Amount');
@@ -74,7 +76,7 @@ class TrustPay
         }
         $trustPayPaymentId = (int) $query['PaymentId'];
 
-        if (empty($query['ResultCode']) || !array_key_exists((int) $query['ResultCode'], self::RESULT_CODES)) {
+        if (!array_key_exists((int) $query['ResultCode'], self::RESULT_CODES)) {
             throw new InvalidArgumentException('Missing ResultCode');
         }
         $resultCode = $query['ResultCode'];
@@ -89,14 +91,49 @@ class TrustPay
         }
         $signature = $query['Signature'];
 
+        $counterAccount = null;
+        if (!empty($query['CounterAccount'])) {
+            $counterAccount = $query['CounterAccount'];
+        }
+
+        $counterAccountName = null;
+        if (!empty($query['CounterAccountName'])) {
+            $counterAccountName = $query['CounterAccountName'];
+        }
+
+        if ($clientPaymentId) {
+            $signatureData = [
+                $accountId,
+                $amount,
+                $currency,
+                $clientPaymentId,
+                $type,
+            ];
+        } else {
+            $signatureData = [
+                $accountId,
+                $amount,
+                $currency,
+                $type,
+            ];
+        }
+        $signedData = TrustPayHelper::signMessage(implode('|', $signatureData), $this->secret);
+        if ($signedData !== $signature) {
+            throw new InvalidArgumentException('Invalid signature');
+        }
+
         $trustPayPayment = new TrustPayPayment();
         $trustPayPayment->setClientPaymentId($clientPaymentId);
         $trustPayPayment->setTrustPayPaymentId($trustPayPaymentId);
+        $trustPayPayment->setTrustPayOrderId($trustPayOrderId);
+
         $trustPayPayment->setType($type);
         $trustPayPayment->setAmount($amount);
         $trustPayPayment->setCurrency($currency);
         $trustPayPayment->setResultCode($resultCode);
-        $trustPayPayment->setTrustPayOrderId($trustPayOrderId);
+
+        $trustPayPayment->setCounterAccount($counterAccount);
+        $trustPayPayment->setCounterAccountName($counterAccountName);
 
         return $trustPayPayment;
     }

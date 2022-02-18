@@ -32,7 +32,8 @@ class TrustPay
         1101 => 'Unsupported currency conversion',
     ];
 
-    private const BASE_URL = 'https://amapi.trustpay.eu/mapi5/wire/paypopup';
+    private const BANK_PAYMENT_URL = 'https://amapi.trustpay.eu/mapi5/wire/paypopup';
+    private const CARD_PAYMENT_URL = 'https://amapi.trustpay.eu/mapi5/Card/PayPopup';
 
     private int $accountId;
     private string $secret;
@@ -56,17 +57,74 @@ class TrustPay
         $signature = TrustPayHelper::signMessage($signatureData, $this->secret);
 
         $query = sprintf(
-            'AccountId=%d&Amount=%s&Currency=%s&Reference=%s&NotificationUrl=%s&PaymentType=%d&Signature=%s',
+            'AccountId=%d&Amount=%s&Currency=%s&Reference=%s&PaymentType=%d&Signature=%s&NotificationUrl=%s',
             $this->accountId,
             TrustPayHelper::formatAmount($payment->getAmount()),
             $payment->getCurrency(),
             urlencode($payment->getClientPaymentId()),
+            $payment->getType(),
+            $signature,
             urlencode($notificationUrl),
-            $paymentType,
-            $signature
         );
 
-        return self::BASE_URL . '?' . $query;
+        return self::BANK_PAYMENT_URL . '?' . $query;
+    }
+
+    public function buildCardPaymentUrl(TrustPayPayment $payment, string $notificationUrl): string
+    {
+        if (null === $payment->getBillingCity()) {
+            throw new InvalidArgumentException('Invalid BillingCity [TrustPayPayment::setBillingCity]');
+        }
+        if (null === $payment->getBillingCountry()) {
+            throw new InvalidArgumentException('Invalid BillingCountry [TrustPayPayment::setBillingCountry]');
+        }
+        if (null === $payment->getBillingPostCode()) {
+            throw new InvalidArgumentException('Invalid BillingPostCode [TrustPayPayment::setBillingPostCode]');
+        }
+        if (null === $payment->getBillingStreet()) {
+            throw new InvalidArgumentException('Invalid BillingStreet [TrustPayPayment::setBillingStreet]');
+        }
+        if (null === $payment->getCardHolder()) {
+            throw new InvalidArgumentException('Invalid CardHolder [TrustPayPayment::setCardHolder]');
+        }
+        if (null === $payment->getEmail()) {
+            throw new InvalidArgumentException('Invalid Email [TrustPayPayment::setEmail]');
+        }
+
+        $signatureData = sprintf(
+            "%d/%s/%s/%s/%d/%s/%s/%s/%s/%s/%s",
+            $this->accountId,
+            TrustPayHelper::formatAmount($payment->getAmount()),
+            $payment->getCurrency(),
+            $payment->getClientPaymentId(), // reference
+            $payment->getType(),
+            $payment->getBillingCity(),
+            $payment->getBillingCountry(),
+            $payment->getBillingPostCode(),
+            $payment->getBillingStreet(),
+            $payment->getCardHolder(),
+            $payment->getEmail(),
+        );
+        $signature = TrustPayHelper::signMessage($signatureData, $this->secret);
+
+        $query = sprintf(
+            'AccountId=%d&Amount=%s&Currency=%s&Reference=%s&PaymentType=%d&Signature=%s&BillingCity=%s&BillingCountry=%s&BillingPostcode=%s&BillingStreet=%s&CardHolder=%s&Email=%s&NotificationUrl=%s',
+            $this->accountId,
+            TrustPayHelper::formatAmount($payment->getAmount()),
+            $payment->getCurrency(),
+            urlencode($payment->getClientPaymentId()), // reference
+            $payment->getType(),
+            $signature,
+            $payment->getBillingCity(),
+            $payment->getBillingCountry(),
+            $payment->getBillingPostCode(),
+            $payment->getBillingStreet(),
+            $payment->getCardHolder(),
+            $payment->getEmail(),
+            urlencode($notificationUrl),
+        );
+
+        return self::CARD_PAYMENT_URL . '?' . $query;
     }
 
     public function validatePaymentRequestQuery(array $query): TrustPayPayment

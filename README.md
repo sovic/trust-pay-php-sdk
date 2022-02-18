@@ -25,8 +25,9 @@ $trustPay = new TrustPay('{account-id}', '{secret}');
 ### Create payment
 
 ```php
-// get TrustPay gateway bank payment url for payment button
+// get TrustPay gateway bank|card payment url for payment button
 $url = $trustPay->buildBankPaymentUrl($trustPayPayment, '{notification-url}');
+$url = $trustPay->buildCardPaymentUrl($trustPayPayment, '{notification-url}');
 ```
 
 ### Validate TrustPay status request

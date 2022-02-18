@@ -20,6 +20,14 @@ class TrustPayPayment
     private ?string $counterAccount = null;
     private ?string $counterAccountName = null;
 
+    // card payment context
+    private ?string $billingCity = null;
+    private ?string $billingCountry = null;
+    private ?string $billingPostCode = null;
+    private ?string $billingStreet = null;
+    private ?string $cardHolder = null;
+    private ?string $email = null;
+
     public function getClientPaymentId(): string
     {
         return $this->clientPaymentId;
@@ -108,6 +116,66 @@ class TrustPayPayment
     public function setCounterAccountName(?string $counterAccountName): void
     {
         $this->counterAccountName = $counterAccountName;
+    }
+
+    public function getBillingCity(): ?string
+    {
+        return $this->billingCity;
+    }
+
+    public function setBillingCity(?string $billingCity): void
+    {
+        $this->billingCity = $billingCity;
+    }
+
+    public function getBillingCountry(): ?string
+    {
+        return $this->billingCountry;
+    }
+
+    public function setBillingCountry(?string $billingCountry): void
+    {
+        $this->billingCountry = $billingCountry;
+    }
+
+    public function getBillingPostCode(): ?string
+    {
+        return $this->billingPostCode;
+    }
+
+    public function setBillingPostCode(?string $billingPostCode): void
+    {
+        $this->billingPostCode = $billingPostCode;
+    }
+
+    public function getBillingStreet(): ?string
+    {
+        return $this->billingStreet;
+    }
+
+    public function setBillingStreet(?string $billingStreet): void
+    {
+        $this->billingStreet = $billingStreet;
+    }
+
+    public function getCardHolder(): ?string
+    {
+        return $this->cardHolder;
+    }
+
+    public function setCardHolder(?string $cardHolder): void
+    {
+        $this->cardHolder = $cardHolder;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): void
+    {
+        $this->email = $email;
     }
 
     /**

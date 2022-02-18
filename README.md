@@ -1,6 +1,6 @@
 # PHP SDK for TrustPay payment gateway
 
-[![packagist](https://img.shields.io/github/v/release/sovic/trust-pay-php-sdk?style=flat-square)]() [![license](https://img.shields.io/github/license/sovic/trust-pay-php-sdk?style=flat-square)]()
+[![packagist](https://img.shields.io/github/v/release/sovic/trust-pay-php-sdk?style=flat-square&maxAge=2592000)]() [![license](https://img.shields.io/github/license/sovic/trust-pay-php-sdk?style=flat-square)]()
 
 ## Requirements
 
@@ -16,13 +16,20 @@ composer require sovic/trust-pay-php-sdk
 
 ## Usage
 
-Init
+### Init
 
 ```php
 $trustPay = new TrustPay('{account-id}', '{secret}');
 ```
 
-Validate TrustPay status request
+### Create payment
+
+```php
+// get TrustPay gateway bank payment url for payment button
+$url = $trustPay->buildBankPaymentUrl($trustPayPayment, '{notification-url}');
+```
+
+### Validate TrustPay status request
 
 ```php 
 $query = [ … ]; // query params array from HTTP request
@@ -31,7 +38,7 @@ try {
     $trustPayPayment = $trustPay->validatePaymentRequestQuery($query);
     if ($trustPayPayment->isPaid()) {
         // handle successful payment
-        $clientPaymentId = $trustPayPayment->getClientPaymentId();
+        $clientPaymentId = $trustPayPayment->getClientPaymentId(); // reference
     } else {
         // handle failed|cancelled payment
     }

@@ -43,7 +43,7 @@ class TrustPay
         $this->secret = $secret;
     }
 
-    public function buildPaymentUrl(TrustPayPayment $payment, string $notificationUrl): string
+    public function buildBankPaymentUrl(TrustPayPayment $payment, string $notificationUrl): string
     {
         $signatureData = sprintf(
             "%d/%s/%s/%s/%d",

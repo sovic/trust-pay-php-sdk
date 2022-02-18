@@ -10,9 +10,9 @@ class TrustPayPayment
     private int $trustPayPaymentId;
     private ?int $trustPayOrderId;
 
-    private string $type;
     private float $amount;
     private string $currency = self::DEFAULT_CURRENCY;
+    private int $type = 0; // For purchase must be set to 0
 
     private int $resultCode;
 
@@ -49,12 +49,12 @@ class TrustPayPayment
         $this->trustPayOrderId = $trustPayOrderId;
     }
 
-    public function getType(): string
+    public function getType(): int
     {
         return $this->type;
     }
 
-    public function setType(string $type): void
+    public function setType(int $type): void
     {
         $this->type = $type;
     }

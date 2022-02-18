@@ -45,15 +45,13 @@ class TrustPay
 
     public function buildPaymentUrl(TrustPayPayment $payment, string $notificationUrl): string
     {
-        $paymentType = 0;
-
         $signatureData = sprintf(
             "%d/%s/%s/%s/%d",
             $this->accountId,
             number_format($payment->getAmount(), 2, '.', ''),
             $payment->getCurrency(),
             $payment->getClientPaymentId(),
-            $paymentType
+            $payment->getType(),
         );
         $signature = TrustPayHelper::signMessage($signatureData, $this->secret);
 

@@ -48,7 +48,7 @@ class TrustPay
         $signatureData = sprintf(
             "%d/%s/%s/%s/%d",
             $this->accountId,
-            number_format($payment->getAmount(), 2, '.', ''),
+            TrustPayHelper::formatAmount($payment->getAmount()),
             $payment->getCurrency(),
             $payment->getClientPaymentId(),
             $payment->getType(),
@@ -58,7 +58,7 @@ class TrustPay
         $query = sprintf(
             'AccountId=%d&Amount=%s&Currency=%s&Reference=%s&NotificationUrl=%s&PaymentType=%d&Signature=%s',
             $this->accountId,
-            number_format($payment->getAmount(), 2, '.', ''),
+            TrustPayHelper::formatAmount($payment->getAmount()),
             $payment->getCurrency(),
             urlencode($payment->getClientPaymentId()),
             urlencode($notificationUrl),

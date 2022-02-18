@@ -16,8 +16,9 @@ class TrustPayPayment
 
     private int $resultCode;
 
-    private ?string $counterAccount;
-    private ?string $counterAccountName;
+    // bank payment context
+    private ?string $counterAccount = null;
+    private ?string $counterAccountName = null;
 
     public function getClientPaymentId(): ?string
     {

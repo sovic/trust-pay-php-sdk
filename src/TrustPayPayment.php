@@ -6,7 +6,7 @@ class TrustPayPayment
 {
     public const DEFAULT_CURRENCY = 'EUR';
 
-    private ?string $clientPaymentId;
+    private string $clientPaymentId;
     private int $trustPayPaymentId;
     private ?int $trustPayOrderId;
 
@@ -20,12 +20,12 @@ class TrustPayPayment
     private ?string $counterAccount = null;
     private ?string $counterAccountName = null;
 
-    public function getClientPaymentId(): ?string
+    public function getClientPaymentId(): string
     {
         return $this->clientPaymentId;
     }
 
-    public function setClientPaymentId(?string $clientPaymentId): void
+    public function setClientPaymentId(string $clientPaymentId): void
     {
         $this->clientPaymentId = $clientPaymentId;
     }

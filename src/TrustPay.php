@@ -94,10 +94,10 @@ class TrustPay
         }
         $currency = $query['CUR'];
 
-        $clientPaymentId = null;
-        if (!empty($query['REF'])) {
-            $clientPaymentId = $query['REF'];
+        if (empty($query['REF'])) {
+            throw new InvalidArgumentException('Missing REF');
         }
+        $clientPaymentId = $query['REF'];
 
         if (empty($query['TID'])) {
             throw new InvalidArgumentException('Missing TID');

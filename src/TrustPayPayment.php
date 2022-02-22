@@ -127,8 +127,8 @@ class TrustPayPayment
 
     public function setBillingCity(?string $billingCity): void
     {
-        if (null !== $billingCity && strlen($billingCity) > 80) {
-            throw new InvalidArgumentException('invalid billingCity');
+        if (null !== $billingCity && ($billingCity === '' || strlen($billingCity) > 80)) {
+            throw new InvalidArgumentException('invalid billingCity [string{1-80}]', 200);
         }
         $this->billingCity = $billingCity;
     }
@@ -140,8 +140,8 @@ class TrustPayPayment
 
     public function setBillingCountry(?string $billingCountry): void
     {
-        if (null !== $billingCountry && strlen($billingCountry) > 2) {
-            throw new InvalidArgumentException('invalid billingCountry');
+        if (null !== $billingCountry && (strlen($billingCountry) !== 2)) {
+            throw new InvalidArgumentException('invalid billingCountry [string{2}]', 201);
         }
         $this->billingCountry = $billingCountry;
     }
@@ -153,8 +153,8 @@ class TrustPayPayment
 
     public function setBillingPostCode(?string $billingPostCode): void
     {
-        if (null !== $billingPostCode && strlen($billingPostCode) > 30) {
-            throw new InvalidArgumentException('invalid billingPostCode');
+        if (null !== $billingPostCode && ($billingPostCode === '' || strlen($billingPostCode) > 30)) {
+            throw new InvalidArgumentException('invalid billingPostCode [string{1-30}]', 202);
         }
         $this->billingPostCode = $billingPostCode;
     }
@@ -166,8 +166,8 @@ class TrustPayPayment
 
     public function setBillingStreet(?string $billingStreet): void
     {
-        if (null !== $billingStreet && strlen($billingStreet) > 100) {
-            throw new InvalidArgumentException('invalid billingStreet');
+        if (null !== $billingStreet && ($billingStreet === '' || strlen($billingStreet) > 100)) {
+            throw new InvalidArgumentException('invalid billingStreet [string{1-100}]', 203);
         }
         $this->billingStreet = $billingStreet;
     }
@@ -180,7 +180,7 @@ class TrustPayPayment
     public function setCardHolder(?string $cardHolder): void
     {
         if (null !== $cardHolder && (strlen($cardHolder) < 3 || strlen($cardHolder) > 140)) {
-            throw new InvalidArgumentException('invalid cardHolder');
+            throw new InvalidArgumentException('invalid cardHolder [string{3-140}]', 204);
         }
         $this->cardHolder = $cardHolder;
     }
@@ -192,6 +192,9 @@ class TrustPayPayment
 
     public function setEmail(?string $email): void
     {
+        if (null !== $email && ($email === '' || strlen($email) > 254)) {
+            throw new InvalidArgumentException('invalid email [string{1-254}]', 205);
+        }
         $this->email = $email;
     }
 

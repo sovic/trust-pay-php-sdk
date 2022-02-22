@@ -2,6 +2,8 @@
 
 namespace TrustPay;
 
+use InvalidArgumentException;
+
 class TrustPayPayment
 {
     public const DEFAULT_CURRENCY = 'EUR';
@@ -125,6 +127,9 @@ class TrustPayPayment
 
     public function setBillingCity(?string $billingCity): void
     {
+        if (null !== $billingCity && strlen($billingCity) > 80) {
+            throw new InvalidArgumentException('invalid billingCity');
+        }
         $this->billingCity = $billingCity;
     }
 
@@ -135,6 +140,9 @@ class TrustPayPayment
 
     public function setBillingCountry(?string $billingCountry): void
     {
+        if (null !== $billingCountry && strlen($billingCountry) > 2) {
+            throw new InvalidArgumentException('invalid billingCountry');
+        }
         $this->billingCountry = $billingCountry;
     }
 
@@ -145,6 +153,9 @@ class TrustPayPayment
 
     public function setBillingPostCode(?string $billingPostCode): void
     {
+        if (null !== $billingPostCode && strlen($billingPostCode) > 30) {
+            throw new InvalidArgumentException('invalid billingPostCode');
+        }
         $this->billingPostCode = $billingPostCode;
     }
 
@@ -155,6 +166,9 @@ class TrustPayPayment
 
     public function setBillingStreet(?string $billingStreet): void
     {
+        if (null !== $billingStreet && strlen($billingStreet) > 100) {
+            throw new InvalidArgumentException('invalid billingStreet');
+        }
         $this->billingStreet = $billingStreet;
     }
 
@@ -165,6 +179,9 @@ class TrustPayPayment
 
     public function setCardHolder(?string $cardHolder): void
     {
+        if (null !== $cardHolder && (strlen($cardHolder) < 3 || strlen($cardHolder) > 140)) {
+            throw new InvalidArgumentException('invalid cardHolder');
+        }
         $this->cardHolder = $cardHolder;
     }
 

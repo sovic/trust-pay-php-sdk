@@ -7,6 +7,8 @@ final class TrustPayRequestTest extends TestCase
     public function testTrustPayResponse(): void
     {
         $accountId = 4107408721;
+        $secret = 'secret';
+
         $query = [
             'AccountId' => '4107408721',
             'Amount' => '5.90',
@@ -20,7 +22,7 @@ final class TrustPayRequestTest extends TestCase
             'Type' => 'CRDT',
         ];
 
-        $trustPay = new TrustPay\TrustPay($accountId, 'secret');
+        $trustPay = new TrustPay\TrustPay($accountId, $secret);
         $trustPayPayment = $trustPay->validateCardPaymentRequestQuery($query);
 
         $this->assertEquals($query['Amount'], $trustPayPayment->getAmount());

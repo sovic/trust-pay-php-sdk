@@ -36,7 +36,7 @@ $url = $trustPay->buildCardPaymentUrl($trustPayPayment, '{notification-url}');
 $query = [ … ]; // query params array from HTTP request
 
 try {
-    $trustPayPayment = $trustPay->validatePaymentRequestQuery($query);
+    $trustPayPayment = $trustPay->validateCardPaymentRequestQuery($query);
     if ($trustPayPayment->isPaid()) {
         // handle successful payment
         $clientPaymentId = $trustPayPayment->getClientPaymentId(); // reference

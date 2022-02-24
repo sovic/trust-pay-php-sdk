@@ -133,6 +133,82 @@ class TrustPay
      * @param array $query
      * @return TrustPayPayment
      */
+    public function validateBankPaymentRequestQuery(array $query): TrustPayPayment
+    {
+        if (empty($query['AccountId']) || (int) $query['AccountId'] <= 0) {
+            throw new InvalidArgumentException('Missing AccountId', 1);
+        }
+        if ($this->accountId !== (int) $query['AccountId']) {
+            throw new InvalidArgumentException('Invalid AccountId', 2);
+        }
+        $accountId = $query['AccountId'];
+
+        if (!in_array($query['Type'], [self::TYPE_CREDIT_CARD, self::TYPE_DEBIT_CARD], true)) {
+            throw new InvalidArgumentException('Missing Type', 2);
+        }
+        $type = $query['Type'];
+
+        if (empty($query['Amount']) || (float) $query['Amount'] <= 0) {
+            throw new InvalidArgumentException('Missing Amount');
+        }
+        $amount = (float) $query['Amount'];
+
+        if (empty($query['Currency'])) {
+            throw new InvalidArgumentException('Missing Currency');
+        }
+        $currency = $query['Currency'];
+
+        if (empty($query['Reference'])) {
+            throw new InvalidArgumentException('Missing Reference');
+        }
+        $clientPaymentId = $query['Reference'];
+
+        if (!array_key_exists((int) $query['ResultCode'], self::RESULT_CODES)) {
+            throw new InvalidArgumentException('Missing ResultCode');
+        }
+        $resultCode = $query['ResultCode'];
+
+        if (empty($query['PaymentId'])) {
+            throw new InvalidArgumentException('Missing PaymentId');
+        }
+        $trustPayPaymentId = (int) $query['PaymentId'];
+
+        if (empty($query['Signature'])) {
+            throw new InvalidArgumentException('Missing Signature');
+        }
+        $signature = $query['Signature'];
+
+        $signatureData = [
+            $accountId,
+            TrustPayHelper::formatAmount($amount),
+            $currency,
+            $type,
+            $resultCode,
+            $trustPayPaymentId,
+            $clientPaymentId,
+        ];
+
+        $signedData = TrustPayHelper::signMessage(implode('/', $signatureData), $this->secret);
+        if ($signedData !== $signature) {
+            throw new InvalidArgumentException('Invalid signature');
+        }
+
+        $trustPayPayment = new TrustPayPayment();
+        $trustPayPayment->setClientPaymentId($clientPaymentId);
+        $trustPayPayment->setTrustPayPaymentId($trustPayPaymentId);
+        $trustPayPayment->setAmount($amount);
+        $trustPayPayment->setCurrency($currency);
+        $trustPayPayment->setResultCode($resultCode);
+
+        return $trustPayPayment;
+    }
+
+    /**
+     * Validates request for API v2
+     *
+     * @param array $query
+     * @return TrustPayPayment
+     */
     public function validateCardPaymentRequestQuery(array $query): TrustPayPayment
     {
         if (empty($query['AccountId']) || (int) $query['AccountId'] <= 0) {
@@ -149,7 +225,7 @@ class TrustPay
         $type = $query['Type'];
 
         if (empty($query['Amount']) || (float) $query['Amount'] <= 0) {
-            throw new InvalidArgumentException('Missing AMT');
+            throw new InvalidArgumentException('Missing Amount');
         }
         $amount = (float) $query['Amount'];
 
